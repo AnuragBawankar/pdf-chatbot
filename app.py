@@ -9,8 +9,11 @@ from langchain_community.vectorstores import FAISS
 
 load_dotenv()
 
-if "OPENAI_API_KEY" in st.secrets:
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+try:
+    if "OPENAI_API_KEY" in st.secrets:
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+except:
+    pass
 
 st.set_page_config(page_title="Chat with your Documents")
 st.header("Document Chatbot")
