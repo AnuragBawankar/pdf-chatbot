@@ -1,11 +1,16 @@
 import streamlit as st
+import os
 from dotenv import load_dotenv
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 
 load_dotenv()
+
+# Support both local .env and Streamlit Cloud secrets
+if "OPENAI_API_KEY" in st.secrets:
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(page_title="Chat with your PDF")
 st.header("PDF Chatbot")
@@ -25,7 +30,7 @@ if uploaded_file is not None:
     chunks = text_splitter.split_text(text)
 
     embeddings = OpenAIEmbeddings()
-    vectorstore = Chroma.from_texts(chunks, embeddings)
+    vectorstore = FAISS.from_texts(chunks, embeddings)
     st.success("PDF processed! Ask me anything about it.")
 
     question = st.text_input("Ask a question about your PDF:")
